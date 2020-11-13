@@ -100,8 +100,10 @@ suite('UnitTests', () => {
       const row = 4;
       const col = 4;
       const value = 3;
+
+      assert.isTrue(solver.checkRegionPlacement(input, row, col, value), '3 should be allowed in box');
       
-      // done();
+      done();
     });
     
     test('Invalid placement for a region', done => {
@@ -110,7 +112,9 @@ suite('UnitTests', () => {
       const col = 4;
       const value = 7;
 
-      // done();
+      assert.isFalse(solver.checkRegionPlacement(input, row, col, value), '7 should not be allowed in box');
+      
+      done();
     });
     
   });

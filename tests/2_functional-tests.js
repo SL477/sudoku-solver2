@@ -55,7 +55,17 @@ suite('Functional Tests', () => {
       const value = "7";
       const status = {valid: true};
 
-      //done()
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle: input,
+        coordinate: coordinate,
+        value: value,
+      })
+      .end((err,res) => {
+        assert.isTrue(res.body.valid, '7 should be allowed');
+        done();
+      });
     })
 
     test('All fields filled in correctly, invalid placement, single conflict', done => {
@@ -64,7 +74,17 @@ suite('Functional Tests', () => {
       const value = "1";
       const status = {valid: false, conflict: [ 'row' ]};
 
-      //done()
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle: input,
+        coordinate: coordinate,
+        value: value,
+      })
+      .end((err,res) => {
+        assert.equal(res.body.conflict[0], status.conflict[0], '1 should not be allowed');
+        done();
+      });
     })
 
     test('All fields filled in correctly, invalid placement, multiple conflicts', done => {
@@ -73,7 +93,17 @@ suite('Functional Tests', () => {
       const value = "1";
       const status = {valid: false, conflict: [ 'row', 'column' ]};
 
-      //done()
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle: input,
+        coordinate: coordinate,
+        value: value,
+      })
+      .end((err,res) => {
+        assert.equal(res.body.conflict[0], status.conflict[0], '1 should not be allowed');
+        done();
+      });
     })
 
     test('All fields filled in correctly, invalid placement, all conflicts', done => {
@@ -82,7 +112,17 @@ suite('Functional Tests', () => {
       const value = "5";
       const status = {valid: false, conflict: [ 'row', 'column', 'region' ]};
 
-      //done()
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle: input,
+        coordinate: coordinate,
+        value: value,
+      })
+      .end((err,res) => {
+        assert.equal(res.body.conflict.length, status.conflict.length, '5 should not be allowed');
+        done();
+      });
     })
 
     test('Required Field(s) Missing', done => {

@@ -97,8 +97,27 @@ class SudokuSolver {
     return possCol.includes(String(value));
   }
 
-  checkRegionPlacement(puzzleString, row, column, value) {
+  getPossibilitiesForBox(num, input) {
+    let boxStarts = [0,3,6,27,30,33,54,57,60];
+    let offset = [0,1,2,9,10,11,18,19,20];
+    let ret = ['1','2','3','4','5','6','7','8','9'];
+    for (var i = 0; i < 9; i++) {
+      let number = input[boxStarts[num] + offset[i]];
+      //console.log('number',number)
+      if (this.isInputValid(number)) {
+        let index = ret.indexOf(number);
+        //console.log('index', index);
+        ret.splice(index,1);
+      }
+    }
+    return ret;
+  }
 
+  checkRegionPlacement(puzzleString, row, column, value) {
+    let index = (row * 9) + column;
+    let boxNum = this.getBoxNumber(index);
+    let possBox = this.getPossibilitiesForBox(boxNum, puzzleString);
+    return possBox.includes(String(value));
   }
 
   solve(puzzleString) {
