@@ -24,8 +24,7 @@ suite('Functional Tests', () => {
 
     test('Puzzle Field Missing', done => {
       const error = { error: 'Required field missing' };
-
-      // done();
+      
     });
 
     test('Invalid Characters in Puzzle', done => {
@@ -44,6 +43,7 @@ suite('Functional Tests', () => {
       const input = '779235418851496372432178956174569283395842761628713549283657194516924837947381625';
       const error = { error: 'Puzzle cannot be solved' };
 
+      //done
     });
   });
   
@@ -87,20 +87,47 @@ suite('Functional Tests', () => {
 
     test('Required Field(s) Missing', done => {
       const error = { error: 'Required field(s) missing' };
-
-      // done();
+      chai.request(server)
+      .post('/api/check')
+      .send({test:'blank'})
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Should return required fields missing');
+        done();
+      });
+      
     });
 
     test('Invalid Characters in Puzzle', done => {
       const error = { error: 'Invalid characters in puzzle' };
 
-      // done();
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle:'..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.a',
+        coordinate: 'A1',
+        value: 1,
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Invalid chars');
+        done();
+      });
+      
     });
 
     test('Puzzle incorrect length', done => {
       const error = { error: 'Expected puzzle to be 81 characters long' };
 
-      // done();
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle:'..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..4',
+        coordinate: 'A1',
+        value: 1,
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Puzzle length');
+        done();
+      });
     });
 
     test('Coordinate Out of Bounds', done => {
@@ -112,6 +139,18 @@ suite('Functional Tests', () => {
 
     test('Invalid Value', done => {
       const error = { error: 'Invalid value' };
+
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle:'..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..',
+        coordinate: 'A1',
+        value: 'a',
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Invalid value');
+        done();
+      });
     });
 
   });

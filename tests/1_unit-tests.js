@@ -40,7 +40,8 @@ suite('UnitTests', () => {
       const longStr = '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6...';
       const errorMsg = 'Expected puzzle to be 81 characters long';
       
-      assert.equal(solver.validate(input).error, error, 'Should return an error');
+      assert.equal(solver.validate(longStr).error, errorMsg, 'Should return an error');
+      assert.equal(solver.validate(shortStr).error, errorMsg, 'Should return an error');
       done();
     });
   });
