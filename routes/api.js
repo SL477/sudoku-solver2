@@ -24,8 +24,7 @@ module.exports = function (app) {
       //if valid is false then 
       //conflict: ['row','column','region'] depending on which stops it from being valid}
 
-      //if the coordinate doesn't exist then return { error: 'Invalid coordinate'}
-
+      
       
 
       //if it is missing puzzle, coordinate or value, then return { error: Required field(s) missing }
@@ -45,7 +44,14 @@ module.exports = function (app) {
             res.json({ error: 'Invalid value' });
           }
           else {
-
+            //if the coordinate doesn't exist then return { error: 'Invalid coordinate'}
+            let rowCol = solver.getRowColumn(req.body.coordinate);
+            if (rowCol.error) {
+              res.json({ error: 'Invalid coordinate' });
+            }
+            else {
+              res.json({ error: solver.getPossibilitiesForColumn(0,'..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..')});
+            }
           }
         }
       }

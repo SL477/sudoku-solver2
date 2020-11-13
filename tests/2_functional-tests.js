@@ -133,9 +133,21 @@ suite('Functional Tests', () => {
     test('Coordinate Out of Bounds', done => {
       const coordinate1 = "K1";
       const coordinate2 = "A11";
+      const puzzle = '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..';
       const error = { error: 'Invalid coordinate'};
       
-    })
+      chai.request(server)
+      .post('/api/check')
+      .send({
+        puzzle: puzzle,
+        coordinate: coordinate1,
+        value: '2'
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Invalid coordinate');
+        done();
+      });
+    });
 
     test('Invalid Value', done => {
       const error = { error: 'Invalid value' };
