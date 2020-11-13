@@ -120,8 +120,134 @@ class SudokuSolver {
     return possBox.includes(String(value));
   }
 
+  getPossibilitiesForCell(index, input) {
+    if (this.isInputValid(input[index])) {
+      return [];
+    }
+    let columnPoss = this.getPossibilitiesForColumn(index % 9, input);
+    let rowPoss = this.getPossibilitiesForRow(Math.floor(index / 9), input);
+    let boxPoss = this.getPossibilitiesForBox(getBoxNumber(index), input);
+  
+    let arr = [columnPoss, rowPoss, boxPoss];
+    return arr.reduce((p,c) => p.filter(e => c.includes(e)));
+  }
+
+  isThereCellWithOnePossibility(input) {
+    for (var i = 0; i < 81; i++) {
+      if (this.getPossibilitiesForCell(i, input).length == 1) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  setNumberInInput(number, index, input) {
+    let ret = '';
+    if (index > 0) {
+      ret += input.substring(0, index);
+    }
+    ret += number;
+    if (index < 80) {
+      ret += input.substring(index + 1);
+    }
+    return ret;
+  }
+
+  sortOnePossibilitiesInCell(input) {
+    let ret = input;
+    let indexOfCellWithOnePossibility = this.isThereCellWithOnePossibility(ret);
+    while (indexOfCellWithOnePossibility > -1) {
+      let num = this.getPossibilitiesForCell(indexOfCellWithOnePossibility, ret);
+      ret = this.setNumberInInput(num[0], indexOfCellWithOnePossibility, ret);
+      indexOfCellWithOnePossibility = this.isThereCellWithOnePossibility(ret);
+      console.log('new puzzle', ret);
+    }
+    return ret;
+  }
+
+  isPuzzleValid(input) {
+    if (input.length !== 81) {
+      return false;
+    }
+    for (var i = 0; i < 9; i++) {
+      //Check each row to make sure that there are no duplicate values
+      let row = [];
+      for (var j = 1; j < 10; j++) {
+        let id = ((i * 9) + j) - 1;
+        let cellVal = input[id];
+        if (this.isInputValid(cellVal)) {
+          //console.log("row", row, 'cellVal', cellVal, 'i',i, 'id',id);
+          if (row.includes(cellVal)) {
+            //console.log("row", row, 'cellVal', cellVal);
+            return false;
+          }
+          else {
+            row.push(cellVal);
+          }
+        }
+      }
+    }
+  
+    //Check each column
+    for (var i = 0; i < 9; i++) {
+      let column = [];
+      for (var j = 0; j < 9; j++) {
+        let id = (j * 9) + i;
+        let cellVal = input[id];
+        if (this.isInputValid(cellVal)) {
+          //console.log("column", column, 'cellVal', cellVal, 'i',i, 'id',id);
+          if (column.includes(cellVal)) {
+            return false;
+          }
+          else {
+            column.push(cellVal);
+          }
+        }
+      }
+    }
+  
+    //check each box
+    let boxStarts = [0,3,6,27,30,33,54,57,60];
+    let offset = [0,1,2,9,10,11,18,19,20];
+    for (var i = 0; i < 9; i++) {
+      let box = [];
+      for (var j = 0; j < 9; j++) {
+        let id = boxStarts[i] + offset[j];
+        let cellVal = input[id];
+        if (this.isInputValid(cellVal)) {
+          //console.log("box", box, 'cellVal', cellVal, 'i',i, 'id',id);
+          if (box.includes(cellVal)) {
+            return false;
+          }
+          else {
+            box.push(cellVal);
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  getNextUnsolvedCell(input) {
+    for (var i = 0; i < 81; i++) {
+      if (!this.isInputValid(input[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   solve(puzzleString) {
-    
+    if (!this.isPuzzleValid(puzzleString)) {
+      return { error: 'Puzzle cannot be solved' };
+    }
+
+    let newSolution = input;
+    newSolution = this.sortOnePossibilitiesInCell(newSolution);
+    if (this.getNextUnsolvedCell(newSolution) == -1) {
+      return { solution: newSolution};
+    }
+    return { error: 'Puzzle cannot be solved' };
   }
 }
 

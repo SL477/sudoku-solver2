@@ -124,14 +124,16 @@ suite('UnitTests', () => {
     test('Valid puzzles pass', done => {
       const input = '769235418851496372432178956174569283395842761628713549283657194516924837947381625';
 
-      // done();
+      assert.equal(solver.solve(input).solution, input, 'Should be identical');
+      done();
     });
 
     // Invalid complete puzzles fail
     test('Invalid puzzles fail', done => {
       const input = '779235418851496372432178956174569283395842761628713549283657194516924837947381625';
 
-      // done();
+      assert.equal(solver.solve(input).error, 'Puzzle cannot be solved', 'Should be unsolvable');
+      done();
     });
 
     // Returns the expected solution for a valid, incomplete puzzle
