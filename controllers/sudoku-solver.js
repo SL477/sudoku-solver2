@@ -126,7 +126,7 @@ class SudokuSolver {
     }
     let columnPoss = this.getPossibilitiesForColumn(index % 9, input);
     let rowPoss = this.getPossibilitiesForRow(Math.floor(index / 9), input);
-    let boxPoss = this.getPossibilitiesForBox(getBoxNumber(index), input);
+    let boxPoss = this.getPossibilitiesForBox(this.getBoxNumber(index), input);
   
     let arr = [columnPoss, rowPoss, boxPoss];
     return arr.reduce((p,c) => p.filter(e => c.includes(e)));
@@ -242,7 +242,7 @@ class SudokuSolver {
       return { error: 'Puzzle cannot be solved' };
     }
 
-    let newSolution = input;
+    let newSolution = puzzleString;
     newSolution = this.sortOnePossibilitiesInCell(newSolution);
     if (this.getNextUnsolvedCell(newSolution) == -1) {
       return { solution: newSolution};

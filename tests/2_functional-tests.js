@@ -19,31 +19,71 @@ suite('Functional Tests', () => {
       const input = '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..';
       const output = '769235418851496372432178956174569283395842761628713549283657194516924837947381625'
 
-      // done();
+      chai.request(server)
+      .post('/api/solve')
+      .send({
+        puzzle: input
+      })
+      .end((err,res) => {
+        assert.equal(res.body.solution, output, 'It should solve');
+        done();
+      });
     });
 
     test('Puzzle Field Missing', done => {
       const error = { error: 'Required field missing' };
-      
+      chai.request(server)
+      .post('/api/solve')
+      .send({
+        test: 'blank'
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Required field missing');
+        done();
+      });
     });
 
     test('Invalid Characters in Puzzle', done => {
       const error = { error: 'Invalid characters in puzzle' };
 
-      // done();
+      chai.request(server)
+      .post('/api/solve')
+      .send({
+        puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.a'
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Invalid characters in puzzle "' + res.body.error + '"');
+        done();
+      });
     });
 
     test('Puzzle incorrect length', done => {
       const error = { error: 'Expected puzzle to be 81 characters long' };
 
-      // done();
+      chai.request(server)
+      .post('/api/solve')
+      .send({
+        puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..9'
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Puzzle too long "' + res.body.error + '"');
+        done();
+      });
     });
 
     test('Puzzle Cannot be Solved', done => {
       const input = '779235418851496372432178956174569283395842761628713549283657194516924837947381625';
       const error = { error: 'Puzzle cannot be solved' };
 
-      //done
+      chai.request(server)
+      .post('/api/solve')
+      .send({
+        puzzle: input
+      })
+      .end((err,res) => {
+        assert.equal(res.body.error, error.error, 'Cannot solve invalid puzzle "' + res.body.error + '"');
+        done();
+      });
     });
   });
   
