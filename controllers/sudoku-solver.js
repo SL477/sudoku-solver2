@@ -242,11 +242,13 @@ class SudokuSolver {
       return { error: 'Puzzle cannot be solved' };
     }
 
-    let newSolution = puzzleString;
-    newSolution = this.sortOnePossibilitiesInCell(newSolution);
+    let newSolution = this.sortOnePossibilitiesInCell(puzzleString);
     if (this.getNextUnsolvedCell(newSolution) == -1) {
       return { solution: newSolution};
     }
+
+    // otherwise we need to start solving it recursively
+
     return { error: 'Puzzle cannot be solved' };
   }
 }
