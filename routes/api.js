@@ -12,7 +12,7 @@ const SudokuSolver = require('../controllers/sudoku-solver.js');
 
 module.exports = function (app) {
   
-  let solver = new SudokuSolver();
+  const solver = new SudokuSolver();
 
   app.route('/api/check')
     .post((req, res) => {
@@ -34,7 +34,7 @@ module.exports = function (app) {
       else {
         //if the puzzle has invalid characters then it returns { error: 'Invalid characters in puzzle' }
         //if the puzzle is invalid length then returns { error&#58; 'Expected puzzle to be 81 characters long' }
-        let isValid = solver.validate(req.body.puzzle);
+        const isValid = solver.validate(req.body.puzzle);
         if (isValid['error']){
           res.json(isValid);
         }
@@ -45,31 +45,31 @@ module.exports = function (app) {
           }
           else {
             //if the coordinate doesn't exist then return { error: 'Invalid coordinate'}
-            let rowCol = solver.getRowColumn(req.body.coordinate);
+            const rowCol = solver.getRowColumn(req.body.coordinate);
             if (rowCol.error) {
               res.json({ error: 'Invalid coordinate' });
             }
             else {
               //res.json({ error: solver.getPossibilitiesForColumn(0,'..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..')});
               //Get whether it is allowed in col, row, region
-              let isCol = solver.checkColPlacement(req.body.puzzle,rowCol.row, rowCol.column, req.body.value);
-              let isRow = solver.checkRowPlacement(req.body.puzzle,rowCol.row, rowCol.column, req.body.value);
-              let isBox = solver.checkRegionPlacement(req.body.puzzle,rowCol.row, rowCol.column, req.body.value);
+              const isCol = solver.checkColPlacement(req.body.puzzle,rowCol.row, rowCol.column, req.body.value);
+              const isRow = solver.checkRowPlacement(req.body.puzzle,rowCol.row, rowCol.column, req.body.value);
+              const isBox = solver.checkRegionPlacement(req.body.puzzle,rowCol.row, rowCol.column, req.body.value);
               if (isBox && isCol && isRow) {
                 res.json({valid: true});
               }
               else {
-                let confs = [];
+                const conflicts = [];
                 if (!isRow) {
-                  confs.push('row');
+                  conflicts.push('row');
                 }
                 if (!isCol) {
-                  confs.push('column');
+                  conflicts.push('column');
                 }
                 if (!isBox) {
-                  confs.push('region');
+                  conflicts.push('region');
                 }
-                res.json({valid: false, conflict: confs});
+                res.json({valid: false, conflict: conflicts});
               }
             }
           }
@@ -85,7 +85,7 @@ module.exports = function (app) {
       }
       else {
         //Check if it is valid
-        let isValid = solver.validate(req.body.puzzle);
+        const isValid = solver.validate(req.body.puzzle);
         if (isValid.error) {
           //let err = isValid.error;
           //console.log('error', err);

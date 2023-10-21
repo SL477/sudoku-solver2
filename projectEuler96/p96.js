@@ -19,17 +19,21 @@ async function main(){
     });
 
     const solver = new SudokuSolver();
+    let result = 0;
 
     for await (const line of rl) {
         //console.log(`'${line.trim()}'`, line.trim().length);
         const solution = solver.solve(line.trim())
         if (solution['solution']) {
-            console.log(solution['solution']);
+            const solved = solution['solution'];
+            console.log(solved);            
+            result += Number(solved.substring(0, 3));
         }
         else {
             console.log(line.trim());
         }
     }
+    console.log(result);
 }
 
 main();
