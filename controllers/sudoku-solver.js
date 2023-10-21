@@ -219,29 +219,46 @@ class SudokuSolver {
     return mergeColumnAndRow.filter(value => boxPossibilities.includes(value));
   }
 
-  isThereCellWithOnePossibility(input) {
+  /**
+   * Get if there is only one possibility for a cell & its index. -1 if there are none.
+   * @param puzzleString{string}
+   * @returns{number}
+   */
+  isThereCellWithOnePossibility(puzzleString) {
     for (var i = 0; i < 81; i++) {
-      if (this.getPossibilitiesForCell(i, input).length == 1) {
+      if (this.getPossibilitiesForCell(i, puzzleString).length == 1) {
         return i;
       }
     }
     return -1;
   }
 
-  setNumberInInput(number, index, input) {
+  /**
+   * Update the puzzle string with an input
+   * @param number{string} The number to enter
+   * @param index{number} The index to change
+   * @param puzzleString{string}
+   * @returns{string}
+   */
+  setNumberInInput(number, index, puzzleString) {
     let ret = '';
     if (index > 0) {
-      ret += input.substring(0, index);
+      ret += puzzleString.substring(0, index);
     }
     ret += number;
     if (index < 80) {
-      ret += input.substring(index + 1);
+      ret += puzzleString.substring(index + 1);
     }
     return ret;
   }
 
-  sortOnePossibilitiesInCell(input) {
-    let ret = input;
+  /**
+   * Fill in the cells with only one possibility
+   * @param puzzleString{string}
+   * @returns{string}
+   */
+  sortOnePossibilitiesInCell(puzzleString) {
+    let ret = puzzleString;
     let indexOfCellWithOnePossibility = this.isThereCellWithOnePossibility(ret);
     while (indexOfCellWithOnePossibility > -1) {
       let num = this.getPossibilitiesForCell(indexOfCellWithOnePossibility, ret);
@@ -333,30 +350,22 @@ class SudokuSolver {
    * This is to recursively solve it
    * It needs to run through guessing the next number
    * @param input{string}
-   * @returns{string[]|bool}
+   * @returns{string|bool}
    */
-  recursiveSolve(input) {
-    let nextUnsolvedCell = this.getNextUnsolvedCell(input);
+  recursiveSolve(puzzleString) {
+    let nextUnsolvedCell = this.getNextUnsolvedCell(puzzleString);
     if (nextUnsolvedCell == -1) {
-      return input;
+      return puzzleString;
     }
 
-    let newInput = [...input];
+    //let newInput = [...input];
 
-    // for (let i = 1; i < 10; i++) {
-    //   newInput[nextUnsolvedCell] = i;
-    //   if (this.isPuzzleValid(newInput)) {
-    //     let newPuzzle = this.recursiveSolve(newInput);
-    //     if (newPuzzle) {
-    //       return newPuzzle;
-    //     }
-    //   }
-    // }
-    const cellPossibilities = this.getPossibilitiesForCell(nextUnsolvedCell, newInput)
+    const cellPossibilities = this.getPossibilitiesForCell(nextUnsolvedCell, puzzleString)
     for (let i = 0; i < cellPossibilities.length; i++) {
-      newInput[nextUnsolvedCell] = cellPossibilities[i];
-      if (this.isPuzzleValid(newInput)) {
-        let newPuzzle = this.recursiveSolve(newInput);
+      //newInput[nextUnsolvedCell] = cellPossibilities[i];
+      puzzleString = this.setNumberInInput(cellPossibilities[i], nextUnsolvedCell, puzzleString);
+      if (this.isPuzzleValid(puzzleString)) {
+        let newPuzzle = this.recursiveSolve(puzzleString);
         if (newPuzzle) {
           return newPuzzle;
         }
@@ -389,7 +398,7 @@ class SudokuSolver {
     // otherwise we need to start solving it recursively
     newSolution = this.recursiveSolve(newSolution);
     if (newSolution) {
-      return { solution: newSolution.join('') };
+      return { solution: newSolution };
     }
 
     return { error: 'Puzzle cannot be solved' };
