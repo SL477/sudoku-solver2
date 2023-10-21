@@ -25,7 +25,9 @@
   "directories": {
     "test": "tests"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^8.52.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SL477/sudoku-solver2.git"

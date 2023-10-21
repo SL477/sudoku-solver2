@@ -5,22 +5,22 @@ class SudokuSolver {
    * @returns{bool}
    */
   isInputValid(input) {
-    //MyFunction
-    // TODO sort this
-    const zeroToNine = ['1','2','3','4','5','6','7','8','9'];
-    return zeroToNine.includes(input);
+    const pattern = /[1-9]/;
+    return input && input.length == 1 && pattern.test(input);
   }
 
+  /**
+   * Check that a sudoku is valid
+   * @param puzzleString{string}
+   * @returns{boolean}
+   */
   validate(puzzleString) {
-    // TODO sort this
-    const validChars = ['1','2','3','4','5','6','7','8','9', '.'];
+    const pattern = /[^1-9.]/;
     if (puzzleString.length !== 81) {
       return { error: 'Expected puzzle to be 81 characters long' };
     }
-    for (var i = 0; i < 81; i++) {
-      if (!validChars.includes(puzzleString[i])) {
-        return { error: 'Invalid characters in puzzle' };
-      }
+    else if (pattern.test(puzzleString)) {
+      return { error: 'Invalid characters in puzzle' };
     }
     return true;
   }
@@ -66,29 +66,13 @@ class SudokuSolver {
 }}
    */
   getRowColumn(value) {
-    // TODO sort out
-    //Value in form of A1-I9
-    if (!value) {
-      return {error: 'Invalid coordinate'};
-    }
-    if (value.length !== 2) {
-      return {error: 'Invalid coordinate'};
-    }
-    let ret = {row: null, column: null};
-    let rowIndex = this.getRowNumber(value[0]);
-    if (rowIndex < 0) {
-      return {error: 'Invalid coordinate'};
-    }
-    ret.row = rowIndex;
-
-    let colIndex = this.getColumnNumber(value[1]);
-    if (colIndex < 0) {
+    // Value in form of A1-I9
+    const pattern = /[A-I][1-9]/;
+    if (!value || value.length !== 2 || !pattern.test(value)) {
       return {error: 'Invalid coordinate'};
     }
 
-    ret.column = colIndex;
-
-    return ret;
+    return {row: this.getRowNumber(value[0]), column: this.getColumnNumber(value[1])};
   }
 
   /**
@@ -98,13 +82,12 @@ class SudokuSolver {
    * @returns{string[]}
    */
   getPossibilitiesForRow(row, puzzle) {
-    // TODO sort out
-    let ret = ['1','2','3','4','5','6','7','8','9'];
-    for (var i = 0; i < 9; i++) {
-      let number = puzzle[i + (9 * row)];
+    const ret = ['1','2','3','4','5','6','7','8','9'];
+    for (let i = 0; i < 9; i++) {
+      const number = puzzle[i + (9 * row)];
       if (this.isInputValid(number)) {
-        let index = ret.indexOf(number);
-        ret.splice(index,1);
+        const index = ret.indexOf(number);
+        ret.splice(index, 1);
       }
     }
     return ret;
@@ -119,7 +102,6 @@ class SudokuSolver {
    * @returns{boolean}
    */
   checkRowPlacement(puzzleString, row, column, value) {
-    //TODO is this used? (used in tests), should it be used elsewhere
     //Returns true/false
     const possibilitiesInRow = this.getPossibilitiesForRow(row, puzzleString);
     return possibilitiesInRow.includes(String(value));
@@ -132,15 +114,14 @@ class SudokuSolver {
    * @returns{string[]}
    */
   getPossibilitiesForColumn(col, puzzle) {
-    //todo sort
     const ret = ['1','2','3','4','5','6','7','8','9'];
-    for (var i = 0; i < 9; i++) {
-      let number = puzzle[col + (9 * i)];
-      //console.log('number',number)
+    for (let i = 0; i < 9; i++) {
+      const number = puzzle[col + (9 * i)];
+      // console.log('number',number)
       if (this.isInputValid(number)) {
-        let index = ret.indexOf(number);
-        //console.log('index', index);
-        ret.splice(index,1);
+        const index = ret.indexOf(number);
+        // console.log('index', index);
+        ret.splice(index, 1);
       }
     }
     return ret;
@@ -155,7 +136,6 @@ class SudokuSolver {
    * @returns{boolean}
    */
   checkColPlacement(puzzleString, row, column, value) {
-    //todo is this used, should it be
     const possibilitiesCol = this.getPossibilitiesForColumn(column, puzzleString);
     return possibilitiesCol.includes(value.toString());
   }
@@ -167,17 +147,16 @@ class SudokuSolver {
    * @returns{string[]}
    */
   getPossibilitiesForBox(num, puzzleString) {
-    // todo sort out
-    let boxStarts = [0,3,6,27,30,33,54,57,60];
-    let offset = [0,1,2,9,10,11,18,19,20];
-    let ret = ['1','2','3','4','5','6','7','8','9'];
+    const boxStarts = [0,3,6,27,30,33,54,57,60];
+    const offset = [0,1,2,9,10,11,18,19,20];
+    const ret = ['1','2','3','4','5','6','7','8','9'];
     for (var i = 0; i < 9; i++) {
-      let number = puzzleString[boxStarts[num] + offset[i]];
-      //console.log('number',number)
+      const number = puzzleString[boxStarts[num] + offset[i]];
+      // console.log('number',number)
       if (this.isInputValid(number)) {
-        let index = ret.indexOf(number);
-        //console.log('index', index);
-        ret.splice(index,1);
+        const index = ret.indexOf(number);
+        // console.log('index', index);
+        ret.splice(index, 1);
       }
     }
     return ret;
@@ -192,11 +171,10 @@ class SudokuSolver {
    * @returns{boolean}
    */
   checkRegionPlacement(puzzleString, row, column, value) {
-    // todo sort out
-    let index = (row * 9) + column;
-    let boxNum = this.getBoxNumber(index);
-    let possibilitiesBox = this.getPossibilitiesForBox(boxNum, puzzleString);
-    return possibilitiesBox.includes(String(value));
+    const index = (row * 9) + column;
+    const boxNum = this.getBoxNumber(index);
+    const possibilitiesBox = this.getPossibilitiesForBox(boxNum, puzzleString);
+    return possibilitiesBox.includes(value.toString());
   }
 
   /**
@@ -205,7 +183,6 @@ class SudokuSolver {
    * @param puzzleString{string}
    */
   getPossibilitiesForCell(index, puzzleString) {
-    // TODO sort out
     if (this.isInputValid(puzzleString[index])) {
       return [];
     }
@@ -213,8 +190,6 @@ class SudokuSolver {
     const rowPossibilities = this.getPossibilitiesForRow(Math.floor(index / 9), puzzleString);
     const boxPossibilities = this.getPossibilitiesForBox(this.getBoxNumber(index), puzzleString);
   
-    //let arr = [columnPossibilities, rowPossibilities, boxPossibilities];
-    //return arr.reduce((p,c) => p.filter(e => c.includes(e)));
     const mergeColumnAndRow = columnPossibilities.filter(value => rowPossibilities.includes(value))
     return mergeColumnAndRow.filter(value => boxPossibilities.includes(value));
   }
@@ -269,16 +244,19 @@ class SudokuSolver {
     return ret;
   }
 
-  isPuzzleValid(input) {
-    if (input.length !== 81) {
+  /**
+   * See if the sudoku is valid
+   */
+  isPuzzleValid(puzzleString) {
+    if (puzzleString.length !== 81) {
       return false;
     }
-    for (var i = 0; i < 9; i++) {
+    for (let i = 0; i < 9; i++) {
       //Check each row to make sure that there are no duplicate values
       let row = [];
-      for (var j = 1; j < 10; j++) {
+      for (let j = 1; j < 10; j++) {
         let id = ((i * 9) + j) - 1;
-        let cellVal = input[id];
+        let cellVal = puzzleString[id];
         if (this.isInputValid(cellVal)) {
           //console.log("row", row, 'cellVal', cellVal, 'i',i, 'id',id);
           if (row.includes(cellVal)) {
@@ -293,11 +271,11 @@ class SudokuSolver {
     }
   
     //Check each column
-    for (var i = 0; i < 9; i++) {
+    for (let i = 0; i < 9; i++) {
       let column = [];
-      for (var j = 0; j < 9; j++) {
+      for (let j = 0; j < 9; j++) {
         let id = (j * 9) + i;
-        let cellVal = input[id];
+        let cellVal = puzzleString[id];
         if (this.isInputValid(cellVal)) {
           //console.log("column", column, 'cellVal', cellVal, 'i',i, 'id',id);
           if (column.includes(cellVal)) {
@@ -313,11 +291,11 @@ class SudokuSolver {
     //check each box
     let boxStarts = [0,3,6,27,30,33,54,57,60];
     let offset = [0,1,2,9,10,11,18,19,20];
-    for (var i = 0; i < 9; i++) {
+    for (let i = 0; i < 9; i++) {
       let box = [];
-      for (var j = 0; j < 9; j++) {
+      for (let j = 0; j < 9; j++) {
         let id = boxStarts[i] + offset[j];
-        let cellVal = input[id];
+        let cellVal = puzzleString[id];
         if (this.isInputValid(cellVal)) {
           //console.log("box", box, 'cellVal', cellVal, 'i',i, 'id',id);
           if (box.includes(cellVal)) {
@@ -358,11 +336,8 @@ class SudokuSolver {
       return puzzleString;
     }
 
-    //let newInput = [...input];
-
     const cellPossibilities = this.getPossibilitiesForCell(nextUnsolvedCell, puzzleString)
     for (let i = 0; i < cellPossibilities.length; i++) {
-      //newInput[nextUnsolvedCell] = cellPossibilities[i];
       puzzleString = this.setNumberInInput(cellPossibilities[i], nextUnsolvedCell, puzzleString);
       if (this.isPuzzleValid(puzzleString)) {
         let newPuzzle = this.recursiveSolve(puzzleString);
