@@ -8,25 +8,26 @@
     "test": "mocha --timeout 5000 --require @babel/register --recursive --exit --ui tdd tests/"
   },
   "dependencies": {
-    "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
-    "@babel/register": "^7.22.15",
+    "@babel/core": "^7.24.3",
+    "@babel/preset-env": "^7.24.3",
+    "@babel/register": "^7.23.7",
     "body-parser": "^1.20.2",
-    "chai": "^4.3.10",
+    "chai": "^5.1.0",
     "chai-http": "^4.4.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsdom": "^22.1.0",
-    "mocha": "^10.2.0",
-    "nodemon": "^3.0.1"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.1",
+    "jsdom": "^24.0.0",
+    "mocha": "^10.3.0",
+    "nodemon": "^3.1.0"
   },
   "license": "MIT",
   "directories": {
     "test": "tests"
   },
   "devDependencies": {
-    "eslint": "^8.52.0"
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5"
   },
   "repository": {
     "type": "git",
@@ -36,5 +37,6 @@
   "bugs": {
     "url": "https://github.com/SL477/sudoku-solver2/issues"
   },
-  "homepage": "https://github.com/SL477/sudoku-solver2#readme"
+  "homepage": "https://github.com/SL477/sudoku-solver2#readme",
+  "type": "module"
 }
