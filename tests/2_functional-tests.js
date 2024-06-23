@@ -6,12 +6,12 @@
  *       (if additional are added, keep them at the very end!)
  */
 
-import { assert as _assert, use } from 'chai';
+import { use, assert } from 'chai';
 import chaiHttp from 'chai-http';
-const assert = _assert;
+const chaiServer = use(chaiHttp);
+// const assert = chai.assert;
 import server from '../server.js';
 import { suite, test } from 'mocha';
-const chaiServer = use(chaiHttp);
 
 suite('Functional Tests', () => {
     suite('POST to /api/solve', () => {
@@ -21,8 +21,8 @@ suite('Functional Tests', () => {
             const output =
                 '769235418851496372432178956174569283395842761628713549283657194516924837947381625';
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/solve')
                 .send({
                     puzzle: input,
@@ -35,8 +35,8 @@ suite('Functional Tests', () => {
 
         test('Puzzle Field Missing', (done) => {
             const error = { error: 'Required field missing' };
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/solve')
                 .send({
                     test: 'blank',
@@ -54,8 +54,8 @@ suite('Functional Tests', () => {
         test('Invalid Characters in Puzzle', (done) => {
             const error = { error: 'Invalid characters in puzzle' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/solve')
                 .send({
                     puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.a',
@@ -73,8 +73,8 @@ suite('Functional Tests', () => {
         test('Puzzle incorrect length', (done) => {
             const error = { error: 'Expected puzzle to be 81 characters long' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/solve')
                 .send({
                     puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..9',
@@ -94,8 +94,8 @@ suite('Functional Tests', () => {
                 '779235418851496372432178956174569283395842761628713549283657194516924837947381625';
             const error = { error: 'Puzzle cannot be solved' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/solve')
                 .send({
                     puzzle: input,
@@ -119,8 +119,8 @@ suite('Functional Tests', () => {
             const value = '7';
             // const status = {valid: true};
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: input,
@@ -140,8 +140,8 @@ suite('Functional Tests', () => {
             const value = '1';
             const status = { valid: false, conflict: ['row'] };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: input,
@@ -165,8 +165,8 @@ suite('Functional Tests', () => {
             const value = '1';
             const status = { valid: false, conflict: ['row', 'column'] };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: input,
@@ -193,8 +193,8 @@ suite('Functional Tests', () => {
                 conflict: ['row', 'column', 'region'],
             };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: input,
@@ -213,8 +213,8 @@ suite('Functional Tests', () => {
 
         test('Required Field(s) Missing', (done) => {
             const error = { error: 'Required field(s) missing' };
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({ test: 'blank' })
                 .end((err, res) => {
@@ -230,8 +230,8 @@ suite('Functional Tests', () => {
         test('Invalid Characters in Puzzle', (done) => {
             const error = { error: 'Invalid characters in puzzle' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.a',
@@ -247,8 +247,8 @@ suite('Functional Tests', () => {
         test('Puzzle incorrect length', (done) => {
             const error = { error: 'Expected puzzle to be 81 characters long' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..4',
@@ -268,8 +268,8 @@ suite('Functional Tests', () => {
                 '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..';
             const error = { error: 'Invalid coordinate' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: puzzle,
@@ -289,8 +289,8 @@ suite('Functional Tests', () => {
         test('Invalid Value', (done) => {
             const error = { error: 'Invalid value' };
 
-            chaiServer
-                .request(server)
+            chaiServer.request
+                .execute(server)
                 .post('/api/check')
                 .send({
                     puzzle: '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..',
